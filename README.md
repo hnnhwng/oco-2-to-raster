@@ -5,7 +5,7 @@ Data available here: https://co2.jpl.nasa.gov/#mission=OCO-2
 
 ### Setup
 1. Place data in the same directory as script.
-2. To create environment:
+2. Create environment:
 ```
 conda create --name <env> --file requirements.txt
 conda activate <env>
