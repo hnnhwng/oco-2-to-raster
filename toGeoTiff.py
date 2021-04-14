@@ -12,14 +12,12 @@ import os
 import sys
 import time
 from itertools import chain
-from operator import itemgetter
 from traceback import print_exc
 
 import geopandas as gpd
 import numpy as np
-import numpy.ma as ma
 import shapely
-from shapely.geometry import Point, Polygon, MultiPolygon
+from shapely.geometry import Polygon, MultiPolygon
 import rasterio
 from rasterio import features
 from geopy.distance import geodesic
