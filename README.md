@@ -1,5 +1,5 @@
 # oco-2-to-raster
-Convert OCO-2 data to single band variable raster
+Convert OCO-2 netCDF4 data to single band variable raster
 
 Data available here: https://co2.jpl.nasa.gov/#mission=OCO-2
 
