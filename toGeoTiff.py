@@ -223,9 +223,10 @@ def usage():
     print('    -r <number> or --resolution <number> to specify the size of each pixel, in meters. Default: 1000')
     print('    -v <string> or --variable <dir> to specify a variable from the dataset to extract. Default "xco2"')
     print('    -e <EPSG code> or --epsg <EPSG code> to specify an output projection. Default: 4326')
+    print('    -b <min_lon, min_lat, max_lon, max_lat> or --bounds min_lon, min_lat, max_lon, max_lat> to specify an raster bounds. Default: "-45,45,-180,180"')
     print('    -o <dir> or --output <dir> to specify a path to an output directory. Default: ""')
-    print('    -f <filename> to specify an input file. Omit to process all files. Default: ""')
-    print('    -a to generate yearly and monthly averages. Default: False')
+    print('    -f <filename> or --file <filename> to specify an input file. Omit to process all files. Default: ""')
+    print('    -a or --average to generate yearly and monthly averages. Default: False')
     print('    -h to display this message ')
 
 
@@ -234,22 +235,19 @@ def main(argv):
     resolution = 1000
     var_code = 'xco2'
     epsg = 4326
+    bounds = '-45, -180, 45, 180'
     file_input = None
     average = False
 
-    min_lat = 41.6814354243425385
-    max_lat = 56.8590362326035716
-    min_lon = -95.1548259411090811
-    max_lon = -74.3440298792844203
-
     try:
-        opts, _args = getopt.getopt(argv, 'har:v:e:o:f:', [
+        opts, _args = getopt.getopt(argv, 'har:v:e:b:o:f:', [
             'help',
             'average',
             'output=',
             'resolution=',
             'variable=',
             'epsg=',
+            'bounds=',
             'file=',
         ])
     except:
@@ -276,7 +274,15 @@ def main(argv):
                 epsg = int(arg)
                 print(f'Output projection is EPSG:{epsg}')
             except ValueError:
-                print(f'ValueError: Option {opt} expects an integer value.')
+                print(f'Option {opt} expects an integer value.')
+                os._exit(0)
+        elif opt in ('-b', '--bounds'):
+            try:
+                [float(x.strip()) for x in arg.strip(' "\'').split(',')]
+                bounds = arg.strip(' "\'')
+                print(f'Raster bounds are set to {bounds}')
+            except:
+                print(f'Option {opt} expects a comma separated list.')
                 os._exit(0)
         elif opt in ('-f', '--file'):
             file_input = arg
@@ -287,7 +293,8 @@ def main(argv):
     spatial_reference = osr.SpatialReference()
     spatial_reference.ImportFromEPSG(epsg)
     projection = spatial_reference.ExportToWkt()
-    bounds = [min_lon, min_lat, max_lon, max_lat]
+
+    bounds = [float(x.strip()) for x in bounds.split(',')]
 
     nc4_files = [
         f
